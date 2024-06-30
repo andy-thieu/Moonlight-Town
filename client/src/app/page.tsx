@@ -1,95 +1,53 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+"use client";
 
-export default function Home() {
+import { useState } from 'react';
+import axios from 'axios';
+
+const Home = () => {
+  const [lobbyId, setLobbyId] = useState('');
+  const [playerName, setPlayerName] = useState('');
+  const [createdLobbyId, setCreatedLobbyId] = useState('');
+
+  const createLobby = async () => {
+    try {
+      const res = await axios.post('/api/create-lobby', { name: playerName });
+      setCreatedLobbyId(res.data.id);
+    } catch (error) {
+      console.error('Error creating lobby:', error);
+    }
+  };
+
+  const joinLobby = async () => {
+    try {
+      const res = await axios.post('/api/join-lobby', { lobbyId: lobbyId, name: playerName });
+      console.log('Joined lobby:', res.data.message);
+    } catch (error) {
+      console.error('Error joining lobby:', error);
+    }
+  };
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{" "}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
-            />
-          </a>
-        </div>
-      </div>
+      <div>
+        <h1>WolvesTown</h1>
 
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
+        <button onClick={createLobby}>Create Lobby</button>
+        {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
+
+        <input
+            type="text"
+            placeholder="Enter Lobby ID"
+            value={lobbyId}
+            onChange={(e) => setLobbyId(e.target.value)}
         />
+        <input
+            type="text"
+            placeholder="Enter Your Name"
+            value={playerName}
+            onChange={(e) => setPlayerName(e.target.value)}
+        />
+        <button onClick={joinLobby}>Join Lobby</button>
       </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p>Find in-depth information about Next.js features and API.</p>
-        </a>
-
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Learn <span>-&gt;</span>
-          </h2>
-          <p>Learn about Next.js in an interactive course with&nbsp;quizzes!</p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p>Explore starter templates for Next.js.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
   );
-}
+};
+
+export default Home;
