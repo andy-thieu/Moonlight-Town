@@ -3,6 +3,7 @@
 import {useEffect, useState} from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
+import styles from './page.module.css'
 
 const Home = () => {
   const [lobbyId, setLobbyId] = useState('');
@@ -34,35 +35,54 @@ const Home = () => {
     }
   };
 
-  useEffect(() => {
-      if(socket) {
-          socket.on('lobby-joined', (data: any) => {
-              console.log('lobby-joined', data);
-          })
-      }
-  },[]);
+    useEffect(() => {
+        if (socket) {
+        socket.on('lobby-updated', (data: any) => {
+            console.log('Lobby updated:', data);
+        });
+        }
+    }, [socket]);
 
   return (
-      <div>
-        <h1>WolvesTown</h1>
+      <>
+          <div className={styles.createLobbyDiv}>
+              <h2>Lobby erstellen</h2>
+              {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
+              <div className={styles.inputDiv}>
+                  <label htmlFor="name">Name</label>
+                  <input
+                      type="text"
+                      name="name"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value)}
+                  />
+              </div>
+              <button onClick={createLobby}>Lobby erstellen</button>
+          </div>
 
-        <button onClick={createLobby}>Create Lobby</button>
-        {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
-
-        <input
-            type="text"
-            placeholder="Enter Lobby ID"
-            value={lobbyId}
-            onChange={(e) => setLobbyId(e.target.value)}
-        />
-        <input
-            type="text"
-            placeholder="Enter Your Name"
-            value={playerName}
-            onChange={(e) => setPlayerName(e.target.value)}
-        />
-        <button onClick={joinLobby}>Join Lobby</button>
-      </div>
+          <div className={styles.joinLobbyDiv}>
+              <h2>Lobby beitreten</h2>
+              <div className={styles.inputDiv}>
+              <label htmlFor="lobbyID">Die Lobby ID</label>
+                  <input
+                      type="text"
+                      name="lobbyID"
+                      value={lobbyId}
+                      onChange={(e) => setLobbyId(e.target.value)}
+                  />
+              </div>
+              <div className={styles.inputDiv}>
+                  <label htmlFor="name">Name</label>
+                  <input
+                      type="text"
+                      name="name"
+                      value={playerName}
+                      onChange={(e) => setPlayerName(e.target.value)}
+                  />
+              </div>
+              <button onClick={joinLobby}>Lobby beitreten</button>
+          </div>
+      </>
   );
 };
 

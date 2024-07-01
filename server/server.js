@@ -13,7 +13,7 @@ io.on('connection', (socket) => {
 
     socket.on('lobby-joined', (lobbyData) => {
         console.log('lobby-joined', lobbyData)
-        socket.emit('lobby-joined', lobbyData)
+        socket.emit('lobby-updated', lobbyData)
     });
 });
 
