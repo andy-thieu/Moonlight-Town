@@ -26,10 +26,6 @@ export default function RootLayout({
         </div>
     </header>
     <main>{children}</main>
-    <footer>
-            <p>programmiert von Andy Thieu</p>
-            <p><a href="mailto:thieuandyhuy@gmail.com">thieuandyhuy@gmail.com</a></p>
-        </footer>
     </body>
     </html>
   );

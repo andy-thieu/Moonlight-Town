@@ -19,7 +19,7 @@ export async function POST(req: Request) {
         if (lobby) {
             lobby.players.push(newPlayer);
 
-            return new Response(JSON.stringify({ message: 'Player added successfully' }), {
+            return new Response(JSON.stringify({ id: lobbyId, players: lobby.players }), {
                 status: 200,
                 headers: { 'Content-Type': 'application/json' }
             });

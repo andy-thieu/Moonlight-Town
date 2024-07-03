@@ -10,14 +10,13 @@ const Home = () => {
   const [playerName, setPlayerName] = useState('');
   const [createdLobbyId, setCreatedLobbyId] = useState('');
   const [socket, setSocket] = useState<any>(undefined);
+  const [players, setPlayers] = useState<string[]>([]);
 
   const createLobby = async () => {
     try {
       const res = await axios.post('/api/create-lobby', { name: playerName });
       setCreatedLobbyId(res.data.id);
-      const socket = io('http://localhost:3001');
-      socket.emit('lobby-created', { lobbyId: res.data.id, name: playerName })
-      setSocket(socket);
+      socket.emit('lobby-joined', res.data.id, playerName)
     } catch (error) {
       console.error('Error creating lobby:', error);
     }
@@ -27,24 +26,28 @@ const Home = () => {
     try {
       const res = await axios.post('/api/join-lobby', { lobbyId: lobbyId, name: playerName });
       console.log('Joined lobby:', res.data.message);
-        const socket = io('http://localhost:3001');
-        socket.emit('lobby-joined', { lobbyId: lobbyId, name: playerName })
-        setSocket(socket);
+      let players = res.data.players.map((player:any) => player.name);
+      players.pop();
+      console.log('Players:', players);
+      setPlayers(players);
+      socket.emit('lobby-joined', res.data.id, playerName)
     } catch (error) {
       console.error('Error joining lobby:', error);
     }
   };
 
     useEffect(() => {
-        if (socket) {
-        socket.on('lobby-updated', (data: any) => {
-            console.log('Lobby updated:', data);
-        });
-        }
-    }, [socket]);
+        const socket = io('http://localhost:3001');
+
+        socket.on('user-joined', (username:any) => {
+          setPlayers((players:any) => players.concat(username));
+        })
+
+        setSocket(socket);
+    }, []);
 
   return (
-      <>
+      <main className={styles.main}>
           <div className={styles.createLobbyDiv}>
               <h2>Lobby erstellen</h2>
               {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
@@ -82,7 +85,14 @@ const Home = () => {
               </div>
               <button onClick={joinLobby}>Lobby beitreten</button>
           </div>
-      </>
+
+            <div className={styles.playersDiv}>
+                <h2>Players</h2>
+                    {players.map((player) => (
+                        <p key={player}>{player}</p>
+                    ))}
+            </div>
+      </main>
   );
 };
 

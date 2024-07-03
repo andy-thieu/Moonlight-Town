@@ -7,14 +7,14 @@ const io = require('socket.io')(3001, {
 
 io.on('connection', (socket) => {
     console.log('new user connected')
-    socket.on('lobby-created', (lobbyData) => {
-        console.log('lobby-created', lobbyData)
-    })
 
-    socket.on('lobby-joined', (lobbyData) => {
-        console.log('lobby-joined', lobbyData)
-        socket.emit('lobby-updated', lobbyData)
+    socket.on('lobby-joined', (lobbyID, username) => {
+        console.log('lobby-joined', lobbyID, username)
+        socket.join(lobbyID)
+        io.to(lobbyID).emit('user-joined', username)
+    });
+
+    socket.on('disconnect', () => {
+        console.log('user disconnected')
     });
 });
-
-console.log('Hello World!')
