@@ -4,6 +4,7 @@ import {useEffect, useState} from 'react';
 import axios from 'axios';
 import io from 'socket.io-client';
 import styles from './page.module.css'
+import { useRouter } from 'next/navigation'
 
 const Home = () => {
   const [lobbyId, setLobbyId] = useState('');
@@ -11,12 +12,14 @@ const Home = () => {
   const [createdLobbyId, setCreatedLobbyId] = useState('');
   const [socket, setSocket] = useState<any>(undefined);
   const [players, setPlayers] = useState<string[]>([]);
+    const router = useRouter();
 
   const createLobby = async () => {
     try {
       const res = await axios.post('/api/create-lobby', { name: playerName });
       setCreatedLobbyId(res.data.id);
       socket.emit('lobby-joined', res.data.id, playerName)
+        router.push(`/lobby/${res.data.id}`)
     } catch (error) {
       console.error('Error creating lobby:', error);
     }
@@ -31,6 +34,7 @@ const Home = () => {
       console.log('Players:', players);
       setPlayers(players);
       socket.emit('lobby-joined', res.data.id, playerName)
+        router.push(`/lobby/${res.data.id}`)
     } catch (error) {
       console.error('Error joining lobby:', error);
     }
@@ -60,7 +64,9 @@ const Home = () => {
                       onChange={(e) => setPlayerName(e.target.value)}
                   />
               </div>
-              <button onClick={createLobby}>Lobby erstellen</button>
+              <button onClick={createLobby}>
+                  Lobby erstellen
+              </button>
           </div>
 
           <div className={styles.joinLobbyDiv}>
@@ -83,7 +89,9 @@ const Home = () => {
                       onChange={(e) => setPlayerName(e.target.value)}
                   />
               </div>
-              <button onClick={joinLobby}>Lobby beitreten</button>
+              <button onClick={joinLobby}>
+                  Lobby beitreten
+              </button>
           </div>
 
             <div className={styles.playersDiv}>

@@ -3,11 +3,11 @@ import { Player } from '@/app/utils/playerInterface';
 
 export async function POST(req: Request) {
     try {
-        const newLobbyId = Math.random().toString(36).substring(2, 10); // Better uniqueness
+        const newLobbyId = Math.random().toString(36).substring(2, 6).toUpperCase();
         const body = await req.json();
 
         const newPlayer: Player = {
-            id: Math.random().toString(36).substring(2, 10), // Better uniqueness
+            id: Math.random().toString(36).substring(2, 6).toUpperCase(),
             name: body.name,
             role: '',
             isAlive: true,
