@@ -12,29 +12,41 @@ const Home = () => {
   const [createdLobbyId, setCreatedLobbyId] = useState('');
   const [socket, setSocket] = useState<any>(undefined);
   const [players, setPlayers] = useState<string[]>([]);
-    const router = useRouter();
+  const router = useRouter();
 
-  const createLobby = async () => {
+  const createLobby = async (e:any) => {
     try {
-      const res = await axios.post('/api/create-lobby', { name: playerName });
-      setCreatedLobbyId(res.data.id);
-      socket.emit('lobby-joined', res.data.id, playerName)
-        router.push(`/lobby/${res.data.id}`)
+        e.preventDefault();
+        const cleanedUsername = playerName.trim().replace(/\s+/g, '_');
+        if (!cleanedUsername) {
+            alert('Username cannot be empty or contain only spaces');
+            return;
+        }
+        const res = await axios.post('/api/create-lobby', { name: cleanedUsername });
+        setCreatedLobbyId(res.data.id);
+        socket.emit('lobby-joined', res.data.id, cleanedUsername)
+        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
     } catch (error) {
       console.error('Error creating lobby:', error);
     }
   };
 
-  const joinLobby = async () => {
+  const joinLobby = async (e:any) => {
     try {
-      const res = await axios.post('/api/join-lobby', { lobbyId: lobbyId, name: playerName });
-      console.log('Joined lobby:', res.data.message);
-      let players = res.data.players.map((player:any) => player.name);
-      players.pop();
-      console.log('Players:', players);
-      setPlayers(players);
-      socket.emit('lobby-joined', res.data.id, playerName)
-        router.push(`/lobby/${res.data.id}`)
+        e.preventDefault();
+        const cleanedUsername = playerName.trim().replace(/\s+/g, '_');
+        if (!cleanedUsername) {
+            alert('Username cannot be empty or contain only spaces');
+            return;
+        }
+        const res = await axios.post('/api/join-lobby', { lobbyId: lobbyId, name: playerName });
+        console.log('Joined lobby:', res.data.message);
+        let players = res.data.players.map((player:any) => player.name);
+        players.pop();
+        console.log('Players:', players);
+        setPlayers(players);
+        socket.emit('lobby-joined', res.data.id, playerName)
+        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
     } catch (error) {
       console.error('Error joining lobby:', error);
     }
@@ -51,8 +63,13 @@ const Home = () => {
     }, []);
 
   return (
-      <main className={styles.main}>
-          <div className={styles.createLobbyDiv}>
+      <>
+          <header>
+              <h1>Moonlight Town</h1>
+          </header>
+
+          <main className={styles.main}>
+          <form className={styles.createLobbyDiv}>
               <h2>Lobby erstellen</h2>
               {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
               <div className={styles.inputDiv}>
@@ -67,12 +84,12 @@ const Home = () => {
               <button onClick={createLobby}>
                   Lobby erstellen
               </button>
-          </div>
+          </form>
 
-          <div className={styles.joinLobbyDiv}>
+          <form className={styles.joinLobbyDiv}>
               <h2>Lobby beitreten</h2>
               <div className={styles.inputDiv}>
-              <label htmlFor="lobbyID">Die Lobby ID</label>
+                  <label htmlFor="lobbyID">Die Lobby ID</label>
                   <input
                       type="text"
                       name="lobbyID"
@@ -92,15 +109,16 @@ const Home = () => {
               <button onClick={joinLobby}>
                   Lobby beitreten
               </button>
-          </div>
+          </form>
 
-            <div className={styles.playersDiv}>
-                <h2>Players</h2>
-                    {players.map((player) => (
-                        <p key={player}>{player}</p>
-                    ))}
-            </div>
-      </main>
+          <div className={styles.playersDiv}>
+              <h2>Players</h2>
+              {players.map((player) => (
+                  <p key={player}>{player}</p>
+              ))}
+          </div>
+          </main>
+      </>
   );
 };
 

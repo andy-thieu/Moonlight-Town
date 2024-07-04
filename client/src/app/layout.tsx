@@ -18,13 +18,6 @@ export default function RootLayout({
   return (
     <html lang="en">
     <body className={inter.className}>
-    <header>
-        <h1>Moonlight Town</h1>
-        <div>
-            <button>About me</button>
-            <button><a href="https://github.com/andy-thieu/Moonlight-Town/" target="_blank">Github</a></button>
-        </div>
-    </header>
     <main>{children}</main>
     </body>
     </html>
