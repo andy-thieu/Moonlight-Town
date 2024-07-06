@@ -22,7 +22,8 @@ const Home = () => {
             alert('Username cannot be empty or contain only spaces');
             return;
         }
-        const res = await axios.post('/api/create-lobby', { name: cleanedUsername });
+        const res = await axios.post('http://localhost:3002/create-lobby', { name: cleanedUsername });
+        console.log('Created lobby:', res.data.id);
         setCreatedLobbyId(res.data.id);
         socket.emit('lobby-joined', res.data.id, cleanedUsername)
         router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
@@ -39,13 +40,13 @@ const Home = () => {
             alert('Username cannot be empty or contain only spaces');
             return;
         }
-        const res = await axios.post('/api/join-lobby', { lobbyId: lobbyId, name: playerName });
-        console.log('Joined lobby:', res.data.message);
+        const res = await axios.post('http://localhost:3002/join-lobby', { lobbyId: lobbyId, name: cleanedUsername});
+        console.log('Joined lobby:', res.data.id);
         let players = res.data.players.map((player:any) => player.name);
         players.pop();
-        console.log('Players:', players);
+        console.log('Players:', res.data.players);
         setPlayers(players);
-        socket.emit('lobby-joined', res.data.id, playerName)
+        socket.emit('lobby-joined', res.data.id, cleanedUsername)
         router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
     } catch (error) {
       console.error('Error joining lobby:', error);
