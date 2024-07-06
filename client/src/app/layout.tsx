@@ -1,9 +1,12 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import 'normalize.css';
+import { Roboto } from "next/font/google";
 
-const inter = Inter({ subsets: ["latin"] });
+const roboto = Roboto({
+  subsets: ["latin"],
+  weight: ['400', '500', '700']
+});
 
 export const metadata: Metadata = {
   title: "Moonlight Town",
@@ -16,8 +19,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-    <body className={inter.className}>
+    <html lang="en" className={roboto.className}>
+    <body>
     <main>{children}</main>
     </body>
     </html>

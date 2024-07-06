@@ -11,4 +11,6 @@ header{
     display: flex;
     justify-content: space-between;
     align-items: center;
+    border: 2px none black;
+    border-bottom-style: solid;
 }

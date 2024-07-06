@@ -6,7 +6,7 @@ interface Player {
     isReady: boolean;
     isHost: boolean;
     isDisconnected: boolean;
-    votes?: number;
+    votes: number;
     voteTarget?: Player;
     usedAbility?: boolean;
 }
@@ -131,7 +131,8 @@ io.on('connection', (socket:any) => {
     socket.on('lobby-joined', (lobbyID:string, username:string, isHost:boolean) => {
         console.log('lobby-joined', lobbyID, username)
         socket.join(lobbyID)
-        io.to(lobbyID).emit('user-joined', username)
+        const user = lobbies.get(lobbyID)?.players.find(player => player.name === username)
+        io.to(lobbyID).emit('user-joined', user)
     });
 
     socket.on('disconnect', () => {

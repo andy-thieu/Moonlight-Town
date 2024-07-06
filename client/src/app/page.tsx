@@ -1,8 +1,7 @@
 "use client";
 
-import {useEffect, useState} from 'react';
+import { useState } from 'react';
 import axios from 'axios';
-import io from 'socket.io-client';
 import styles from './page.module.css'
 import { useRouter } from 'next/navigation'
 
@@ -10,8 +9,6 @@ const Home = () => {
   const [lobbyId, setLobbyId] = useState('');
   const [playerName, setPlayerName] = useState('');
   const [createdLobbyId, setCreatedLobbyId] = useState('');
-  const [socket, setSocket] = useState<any>(undefined);
-  const [players, setPlayers] = useState<string[]>([]);
   const router = useRouter();
 
   const createLobby = async (e:any) => {
@@ -25,8 +22,7 @@ const Home = () => {
         const res = await axios.post('http://localhost:3002/create-lobby', { name: cleanedUsername });
         console.log('Created lobby:', res.data.id);
         setCreatedLobbyId(res.data.id);
-        socket.emit('lobby-joined', res.data.id, cleanedUsername)
-        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
+        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}&isHost=true`)
     } catch (error) {
       console.error('Error creating lobby:', error);
     }
@@ -42,36 +38,22 @@ const Home = () => {
         }
         const res = await axios.post('http://localhost:3002/join-lobby', { lobbyId: lobbyId, name: cleanedUsername});
         console.log('Joined lobby:', res.data.id);
-        let players = res.data.players.map((player:any) => player.name);
-        players.pop();
-        console.log('Players:', res.data.players);
-        setPlayers(players);
-        socket.emit('lobby-joined', res.data.id, cleanedUsername)
-        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}`)
+        console.log('Current players:', res.data.players);
+        router.push(`/lobby/${res.data.id}?username=${encodeURIComponent(cleanedUsername)}&isHost=false`)
     } catch (error) {
       console.error('Error joining lobby:', error);
     }
   };
 
-    useEffect(() => {
-        const socket = io('http://localhost:3001');
-
-        socket.on('user-joined', (username:any) => {
-          setPlayers((players:any) => players.concat(username));
-        })
-
-        setSocket(socket);
-    }, []);
-
   return (
       <>
           <header>
-              <h1>Moonlight Town</h1>
+              <p className={styles.gameName}>Moonlight Town</p>
           </header>
 
           <main className={styles.main}>
           <form className={styles.createLobbyDiv}>
-              <h2>Lobby erstellen</h2>
+              <p>Lobby erstellen</p>
               {createdLobbyId && <p>Created Lobby ID: {createdLobbyId}</p>}
               <div className={styles.inputDiv}>
                   <label htmlFor="name">Name</label>
@@ -111,13 +93,6 @@ const Home = () => {
                   Lobby beitreten
               </button>
           </form>
-
-          <div className={styles.playersDiv}>
-              <h2>Players</h2>
-              {players.map((player) => (
-                  <p key={player}>{player}</p>
-              ))}
-          </div>
           </main>
       </>
   );
