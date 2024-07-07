@@ -8,3 +8,8 @@
     align-items: center;
     justify-content: space-around;
 }
+.gameName{
+    font-size: 2rem;
+    margin: 0 0 0 1vw;
+    font-weight: bold;
+}

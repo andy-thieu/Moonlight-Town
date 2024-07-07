@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import io from 'socket.io-client';
 import styles from './page.module.css';
 import axios from "axios";
+import { useRouter } from 'next/navigation'
 
 interface Player {
     id: string;
@@ -19,16 +20,17 @@ interface Player {
 }
 
 export default function Page({ params }: { params: { id: string} }) {
-    const [username, setUsername] = useState<string>('');
     const [players, setPlayers] = useState<Player[]>([]);
     const [currentUser, setCurrentUser] = useState<Player | null>(null);
+    const router = useRouter();
+
+    const handleLeaveButtonClick = () => {
+        router.push('/');
+    };
 
     useEffect(() => {
         const queryParams = new URLSearchParams(window.location.search);
         const username = queryParams.get('username');
-        if (username) {
-            setUsername(username);
-        }
         const socket = io('http://localhost:3001');
 
         axios.get(`http://localhost:3002/lobby/${params.id}`).then((res) => {
@@ -69,7 +71,10 @@ export default function Page({ params }: { params: { id: string} }) {
                     <span className={styles.id}>ID: {params.id}</span>
                     <span className={styles.copyIDtext}>Click to copy ID!</span>
                 </button>
-                <button className={styles.leaveButton}>Lobby verlassen</button>
+                <button className={styles.leaveButton} onClick={handleLeaveButtonClick}>
+                    <span className={styles.leaveLobbyText}>Leave Lobby</span>
+                    <span>Click to leave lobby!</span>
+                </button>
             </header>
             <div className={styles.playersDiv}>
                 <p className={styles.playerstext}>Players ({players.length})</p>

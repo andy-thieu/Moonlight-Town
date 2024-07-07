@@ -70,7 +70,7 @@ const Home = () => {
           </form>
 
           <form className={styles.joinLobbyDiv}>
-              <h2>Lobby beitreten</h2>
+              <p>Lobby beitreten</p>
               <div className={styles.inputDiv}>
                   <label htmlFor="lobbyID">Die Lobby ID</label>
                   <input
