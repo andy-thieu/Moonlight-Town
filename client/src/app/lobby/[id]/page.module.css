@@ -7,7 +7,7 @@
 .gameName{
     font-size: 2rem;
     margin: 0 0 0 1vw;
-    font-weight: bold;
+    font-weight: 500;
 }
 .id{
     font-size: 1.5rem;
@@ -137,10 +137,4 @@
 .idButton:hover:after {
     top: 0;
     left: 0;
-}
-
-@media (min-width: 768px) {
-    .button-52 {
-        padding: 13px 50px 13px;
-    }
 }

@@ -66,7 +66,11 @@ export default function Page({ params }: { params: { id: string} }) {
     const [buttonLabel, setButtonLabel] = useState('Click to copy ID!');
 
     const handleCopyIDClick = () => {
-        navigator.clipboard.writeText(params.id).then(r => console.log('Copied ID to clipboard')).catch(e => console.error('Error copying ID to clipboard:', e));
+        navigator
+            .clipboard
+            .writeText(params.id)
+            .then(r => console.log('Copied ID to clipboard'))
+            .catch(e => console.error('Error copying ID to clipboard:', e));
 
         setButtonLabel('ID Copied!')
 
@@ -84,8 +88,8 @@ export default function Page({ params }: { params: { id: string} }) {
                     <span className={styles.copyIDtext}>{buttonLabel}</span>
                 </button>
                 <button className={styles.leaveButton} onClick={handleLeaveButtonClick}>
-                    <span className={styles.leaveLobbyText}>Leave Lobby</span>
-                    <span>Click to leave lobby!</span>
+                    <span className={styles.leaveLobbyText}>Spiel verlassen</span>
+                    <span>Hier Spiel verlassen</span>
                 </button>
             </header>
             <div className={styles.playersDiv}>
@@ -93,7 +97,7 @@ export default function Page({ params }: { params: { id: string} }) {
                 {
                     players.map((player) => (
                         <div key={player.id} className={styles.playerDiv}>
-                            <p>{player.name}     {player.isHost ? '(Host)' : ''}</p>
+                            <p>{player.name} {player.isHost ? '(Host)' : ''}</p>
                         </div>
                     ))
                 }
