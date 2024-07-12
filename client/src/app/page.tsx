@@ -64,8 +64,9 @@ const Home = () => {
                       onChange={(e) => setPlayerName(e.target.value)}
                   />
               </div>
-              <button onClick={createLobby}>
-                  Lobby erstellen
+              <button onClick={createLobby} className={styles.joinLobbyButton}>
+                  <span>Lobby erstellen</span>
+                  <span>Create Lobby</span>
               </button>
           </form>
 
@@ -89,8 +90,9 @@ const Home = () => {
                       onChange={(e) => setPlayerName(e.target.value)}
                   />
               </div>
-              <button onClick={joinLobby}>
-                  Lobby beitreten
+              <button onClick={joinLobby} className={styles.joinLobbyButton}>
+                  <span>Lobby beitreten</span>
+                  <span>Join Lobby</span>
               </button>
           </form>
           </main>

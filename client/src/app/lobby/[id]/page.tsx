@@ -63,13 +63,25 @@ export default function Page({ params }: { params: { id: string} }) {
         };
     }, [params.id]);
 
+    const [buttonLabel, setButtonLabel] = useState('Click to copy ID!');
+
+    const handleCopyIDClick = () => {
+        navigator.clipboard.writeText(params.id).then(r => console.log('Copied ID to clipboard')).catch(e => console.error('Error copying ID to clipboard:', e));
+
+        setButtonLabel('ID Copied!')
+
+        setTimeout(() => {
+            setButtonLabel('Click to copy ID!');
+        }, 3000);
+    }
+
     return (
         <main className={styles.main}>
             <header>
                 <p className={styles.gameName}>Moonlight Town</p>
-                <button onClick={() => navigator.clipboard.writeText(params.id)} className={styles.idButton}>
+                <button onClick={handleCopyIDClick} className={styles.idButton}>
                     <span className={styles.id}>ID: {params.id}</span>
-                    <span className={styles.copyIDtext}>Click to copy ID!</span>
+                    <span className={styles.copyIDtext}>{buttonLabel}</span>
                 </button>
                 <button className={styles.leaveButton} onClick={handleLeaveButtonClick}>
                     <span className={styles.leaveLobbyText}>Leave Lobby</span>
